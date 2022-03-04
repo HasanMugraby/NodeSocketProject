@@ -3,17 +3,18 @@ const path = require('path');
 
 const app = express();
 const server = require('http').createServer(app);
-
-//const socket = require('socket.io')(server);
+const io = require('socket.io')(server);
 
 app.use(express.static(path.join(__dirname,'Views')));
-app.get('/',(req,res) => {
+app.get('/',(_,res) => {
     res.render('index.html');
-
 });
 
-io.on('connection', () =>{
-    
+io.on('connection', (socket) =>{
+    console.log('connection is opened');
+    socket.on('send-message',(data) =>{
+        io.sockets.emit('send-message',data);
+    });
 });
 
 server.listen(5050 , () =>{
